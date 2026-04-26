@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _color: {r: 0, g: 1, b: 0, a: 1}
-  _radius: 1.5
+  _radius: 2
   _targetCount: 10
 --- !u!222 &1207898779612850976
 CanvasRenderer:

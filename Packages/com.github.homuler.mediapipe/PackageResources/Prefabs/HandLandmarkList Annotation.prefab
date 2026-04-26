@@ -106,7 +106,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9215842904284589815, guid: e260d2f5fb90a790385fcb2d815b23a6, type: 3}
       propertyPath: _radius
-      value: 1.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9215842904284589815, guid: e260d2f5fb90a790385fcb2d815b23a6, type: 3}
       propertyPath: color.g
