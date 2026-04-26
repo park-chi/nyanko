@@ -128,12 +128,10 @@ namespace Mediapipe.Unity
     {
       if (this.gameObject.name.EndsWith($"_{targetNum}"))
       {
-        UnityEngine.Debug.Log($"Activate {this.gameObject.name}");
         this.gameObject.SetActive(true);
         return true;
       }
 
-      UnityEngine.Debug.Log($"Deactivate {this.gameObject.name}");
       this.gameObject.SetActive(false);
       return false;
     }
