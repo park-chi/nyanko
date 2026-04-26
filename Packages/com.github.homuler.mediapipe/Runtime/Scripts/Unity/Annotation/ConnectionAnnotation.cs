@@ -26,16 +26,5 @@ namespace Mediapipe.Unity
     {
       Draw(_currentTarget);
     }
-
-    protected bool ActivateFor(Connection target)
-    {
-      if (target == null || !target.start.isActiveInHierarchy || !target.end.isActiveInHierarchy)
-      {
-        SetActive(false);
-        return false;
-      }
-      SetActive(true);
-      return true;
-    }
   }
 }
