@@ -1,0 +1,144 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+using mptcc = Mediapipe.Tasks.Components.Containers;
+
+namespace Mediapipe.Unity
+{
+#pragma warning disable IDE0065
+  using Color = UnityEngine.Color;
+#pragma warning restore IDE0065
+
+  public sealed class HandLandmarkListAnnotation : HierarchicalAnnotation
+  {
+    [SerializeField] private PointListAnnotation _landmarkListAnnotation;
+    [SerializeField] private Color _leftLandmarkColor = Color.green;
+    [SerializeField] private Color _rightLandmarkColor = Color.green;
+
+    public enum Hand
+    {
+      Left,
+      Right,
+    }
+
+    private const int _LandmarkCount = 21;
+    private const int _targetCount = 10;
+
+    public override bool isMirrored
+    {
+      set
+      {
+        _landmarkListAnnotation.isMirrored = value;
+        base.isMirrored = value;
+      }
+    }
+
+    public override RotationAngle rotationAngle
+    {
+      set
+      {
+        _landmarkListAnnotation.rotationAngle = value;
+        base.rotationAngle = value;
+      }
+    }
+
+    public PointAnnotation this[int index] => _landmarkListAnnotation[index];
+
+    private void Start()
+    {
+      _landmarkListAnnotation.Fill(_LandmarkCount);
+    }
+
+    public void SetLeftLandmarkColor(Color leftLandmarkColor)
+    {
+      _leftLandmarkColor = leftLandmarkColor;
+    }
+
+    public void SetRightLandmarkColor(Color rightLandmarkColor)
+    {
+      _rightLandmarkColor = rightLandmarkColor;
+    }
+
+    public void SetHandedness(Hand handedness)
+    {
+      if (handedness == Hand.Left)
+      {
+        _landmarkListAnnotation.SetColor(_leftLandmarkColor);
+      }
+      else if (handedness == Hand.Right)
+      {
+        _landmarkListAnnotation.SetColor(_rightLandmarkColor);
+      }
+    }
+
+    public void SetHandedness(IReadOnlyList<Classification> handedness)
+    {
+      if (handedness == null || handedness.Count == 0 || handedness[0].Label == "Left")
+      {
+        SetHandedness(Hand.Left);
+      }
+      else if (handedness[0].Label == "Right")
+      {
+        SetHandedness(Hand.Right);
+      }
+      // ignore unknown label
+    }
+
+    public void SetHandedness(ClassificationList handedness)
+    {
+      SetHandedness(handedness.Classification);
+    }
+
+    public void SetHandedness(IReadOnlyList<mptcc.Category> handedness)
+    {
+      if (handedness == null || handedness.Count == 0 || handedness[0].categoryName == "Left")
+      {
+        SetHandedness(Hand.Left);
+      }
+      else if (handedness[0].categoryName == "Right")
+      {
+        SetHandedness(Hand.Right);
+      }
+      // ignore unknown label
+    }
+
+    public void SetHandedness(mptcc.Classifications handedness)
+    {
+      SetHandedness(handedness.categories);
+    }
+
+    public void Draw(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false)
+    {
+      if (ActivateFor(target))
+      {
+        _landmarkListAnnotation.Draw(target, visualizeZ);
+      }
+    }
+
+    public void Draw(NormalizedLandmarkList target, bool visualizeZ = false)
+    {
+      Draw(target?.Landmark, visualizeZ);
+    }
+
+    public void Draw(IReadOnlyList<mptcc.NormalizedLandmark> target, bool visualizeZ = false)
+    {
+      if (ActivateFor(target))
+      {
+        _landmarkListAnnotation.Draw(target, visualizeZ);
+        // Draw explicitly because connection annotation's targets remain the same.
+      }
+    }
+
+    public void Draw(mptcc.NormalizedLandmarks target, bool visualizeZ = false)
+    {
+      Draw(target.landmarks, visualizeZ);
+    }
+  }
+}
