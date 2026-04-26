@@ -9,6 +9,7 @@ v1.1.00(今後の拡張)<br>
 ・猫に触れた際のアクション・音を追加<br>
 ・手の大きさに合わせて表示される猫の大きさを変更<br>
 ・複数種類の猫に対応<br>
+・カメラが繋がれていない際の警告表示<br>
 
 # Lisence
 This project is licensed under the MIT License, see the LICENSE.txt file for details
