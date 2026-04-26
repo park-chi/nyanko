@@ -19,7 +19,8 @@ namespace Mediapipe.Unity
   public class PointAnnotation : HierarchicalAnnotation
   {
     [SerializeField] private Color _color = Color.green;
-    [SerializeField] private float _radius = 15.0f;
+    [SerializeField] private float _radius = 1.5f;
+    [SerializeField] private int _targetCount = 10;
 
     private void OnEnable()
     {
@@ -44,15 +45,21 @@ namespace Mediapipe.Unity
       ApplyRadius(_radius);
     }
 
+    public void SetTarget(int targetCount)
+    {
+      _targetCount = targetCount;
+      ApplyTargetActive(_targetCount);
+    }
+
     public void Draw(Vector3 position)
     {
-      SetActive(true); // Vector3 is not nullable
+      ApplyTargetActive(_targetCount);
       transform.localPosition = position;
     }
 
     public void Draw(Landmark target, Vector3 scale, bool visualizeZ = true)
     {
-      if (ActivateFor(target))
+      if (ApplyTargetActive(_targetCount))
       {
         var position = GetScreenRect().GetPoint(target, scale, rotationAngle, isMirrored);
         if (!visualizeZ)
@@ -65,7 +72,7 @@ namespace Mediapipe.Unity
 
     public void Draw(NormalizedLandmark target, bool visualizeZ = true)
     {
-      if (ActivateFor(target))
+      if (ApplyTargetActive(_targetCount))
       {
         var position = GetScreenRect().GetPoint(target, rotationAngle, isMirrored);
         if (!visualizeZ)
@@ -78,7 +85,7 @@ namespace Mediapipe.Unity
 
     public void Draw(in mptcc.NormalizedLandmark target, bool visualizeZ = true)
     {
-      if (ActivateFor(target))
+      if (ApplyTargetActive(_targetCount))
       {
         var position = GetScreenRect().GetPoint(in target, rotationAngle, isMirrored);
         if (!visualizeZ)
@@ -91,7 +98,7 @@ namespace Mediapipe.Unity
 
     public void Draw(mplt.RelativeKeypoint target, float threshold = 0.0f)
     {
-      if (ActivateFor(target))
+      if (ApplyTargetActive(_targetCount))
       {
         Draw(GetScreenRect().GetPoint(target, rotationAngle, isMirrored));
         SetColor(GetColor(target.Score, threshold));
@@ -100,7 +107,7 @@ namespace Mediapipe.Unity
 
     public void Draw(mptcc.NormalizedKeypoint target, float threshold = 0.0f)
     {
-      if (ActivateFor(target))
+      if (ApplyTargetActive(_targetCount))
       {
         Draw(GetScreenRect().GetPoint(target, rotationAngle, isMirrored));
         SetColor(GetColor(target.score ?? 1.0f, threshold));
@@ -115,6 +122,20 @@ namespace Mediapipe.Unity
     private void ApplyRadius(float radius)
     {
       transform.localScale = radius * Vector3.one;
+    }
+
+    private bool ApplyTargetActive(int targetNum)
+    {
+      if (this.gameObject.name.EndsWith($"_{targetNum}"))
+      {
+        UnityEngine.Debug.Log($"Activate {this.gameObject.name}");
+        this.gameObject.SetActive(true);
+        return true;
+      }
+
+      UnityEngine.Debug.Log($"Deactivate {this.gameObject.name}");
+      this.gameObject.SetActive(false);
+      return false;
     }
 
     private Color GetColor(float score, float threshold)

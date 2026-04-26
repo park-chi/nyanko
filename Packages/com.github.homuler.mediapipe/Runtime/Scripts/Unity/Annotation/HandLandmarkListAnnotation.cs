@@ -19,7 +19,6 @@ namespace Mediapipe.Unity
   public sealed class HandLandmarkListAnnotation : HierarchicalAnnotation
   {
     [SerializeField] private PointListAnnotation _landmarkListAnnotation;
-    [SerializeField] private ConnectionListAnnotation _connectionListAnnotation;
     [SerializeField] private Color _leftLandmarkColor = Color.green;
     [SerializeField] private Color _rightLandmarkColor = Color.green;
 
@@ -30,36 +29,13 @@ namespace Mediapipe.Unity
     }
 
     private const int _LandmarkCount = 21;
-    private readonly List<(int, int)> _connections = new List<(int, int)> {
-      (0, 1),
-      (1, 2),
-      (2, 3),
-      (3, 4),
-      (0, 5),
-      (5, 9),
-      (9, 13),
-      (13, 17),
-      (0, 17),
-      (5, 6),
-      (6, 7),
-      (7, 8),
-      (9, 10),
-      (10, 11),
-      (11, 12),
-      (13, 14),
-      (14, 15),
-      (15, 16),
-      (17, 18),
-      (18, 19),
-      (19, 20),
-    };
+    private const int _targetCount = 10;
 
     public override bool isMirrored
     {
       set
       {
         _landmarkListAnnotation.isMirrored = value;
-        _connectionListAnnotation.isMirrored = value;
         base.isMirrored = value;
       }
     }
@@ -69,7 +45,6 @@ namespace Mediapipe.Unity
       set
       {
         _landmarkListAnnotation.rotationAngle = value;
-        _connectionListAnnotation.rotationAngle = value;
         base.rotationAngle = value;
       }
     }
@@ -79,7 +54,6 @@ namespace Mediapipe.Unity
     private void Start()
     {
       _landmarkListAnnotation.Fill(_LandmarkCount);
-      _connectionListAnnotation.Fill(_connections, _landmarkListAnnotation);
     }
 
     public void SetLeftLandmarkColor(Color leftLandmarkColor)
@@ -90,16 +64,6 @@ namespace Mediapipe.Unity
     public void SetRightLandmarkColor(Color rightLandmarkColor)
     {
       _rightLandmarkColor = rightLandmarkColor;
-    }
-
-    public void SetLandmarkRadius(float landmarkRadius)
-    {
-      _landmarkListAnnotation.SetRadius(landmarkRadius);
-    }
-
-    public void SetCatImage(RawImage catImage)
-    {
-      catImage.gameObject.SetActive(true);
     }
 
     public void SetHandedness(Hand handedness)
@@ -155,8 +119,6 @@ namespace Mediapipe.Unity
       if (ActivateFor(target))
       {
         _landmarkListAnnotation.Draw(target, visualizeZ);
-        // Draw explicitly because connection annotation's targets remain the same.
-        _connectionListAnnotation.Redraw();
       }
     }
 
@@ -171,7 +133,6 @@ namespace Mediapipe.Unity
       {
         _landmarkListAnnotation.Draw(target, visualizeZ);
         // Draw explicitly because connection annotation's targets remain the same.
-        _connectionListAnnotation.Redraw();
       }
     }
 

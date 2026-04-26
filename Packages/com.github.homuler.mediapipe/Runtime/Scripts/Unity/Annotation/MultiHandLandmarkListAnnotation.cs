@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,10 +22,8 @@ namespace Mediapipe.Unity
     [SerializeField] private Color _leftLandmarkColor = Color.green;
     [SerializeField] private Color _rightLandmarkColor = Color.green;
     [SerializeField] private float _landmarkRadius = 15.0f;
-    [SerializeField] private Color _connectionColor = Color.white;
-    [SerializeField, Range(0, 1)] private float _connectionWidth = 1.0f;
+    [SerializeField] private int _targetCount = 10;
 
-    [SerializeField] private RawImage _catImage;
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -33,8 +32,6 @@ namespace Mediapipe.Unity
       {
         ApplyLeftLandmarkColor(_leftLandmarkColor);
         ApplyRightLandmarkColor(_rightLandmarkColor);
-        ApplyLandmarkRadius(_landmarkRadius);
-        ApplyCatImage(_catImage);
       }
     }
 #endif
@@ -49,18 +46,6 @@ namespace Mediapipe.Unity
     {
       _rightLandmarkColor = rightLandmarkColor;
       ApplyRightLandmarkColor(_rightLandmarkColor);
-    }
-
-    public void SetLandmarkRadius(float landmarkRadius)
-    {
-      _landmarkRadius = landmarkRadius;
-      ApplyLandmarkRadius(_landmarkRadius);
-    }
-
-    public void SetCatImage(RawImage catImage)
-    {
-      _catImage = catImage;
-      ApplyCatImage(_catImage);
     }
 
     public void SetHandedness(IReadOnlyList<ClassificationList> handedness)
@@ -106,7 +91,7 @@ namespace Mediapipe.Unity
       {
         CallActionForAll(targets, (annotation, target) =>
         {
-          if (annotation != null) { annotation.Draw(target, visualizeZ); }
+          if (annotation != null) { annotation.Draw(target, visualizeZ);}
         });
       }
     }
@@ -116,8 +101,6 @@ namespace Mediapipe.Unity
       var annotation = base.InstantiateChild(isActive);
       annotation.SetLeftLandmarkColor(_leftLandmarkColor);
       annotation.SetRightLandmarkColor(_rightLandmarkColor);
-      annotation.SetLandmarkRadius(_landmarkRadius);
-      annotation.SetCatImage(_catImage);
       return annotation;
     }
 
@@ -134,22 +117,6 @@ namespace Mediapipe.Unity
       foreach (var handLandmarkList in children)
       {
         if (handLandmarkList != null) { handLandmarkList.SetRightLandmarkColor(rightLandmarkColor); }
-      }
-    }
-
-    private void ApplyLandmarkRadius(float landmarkRadius)
-    {
-      foreach (var handLandmarkList in children)
-      {
-        if (handLandmarkList != null) { handLandmarkList.SetLandmarkRadius(landmarkRadius); }
-      }
-    }
-
-    private void ApplyCatImage(RawImage catImage)
-    {
-      foreach (var handLandmarkList in children)
-      {
-        if (handLandmarkList != null) { handLandmarkList.SetCatImage(catImage); }
       }
     }
   }

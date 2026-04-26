@@ -35,7 +35,8 @@ namespace Mediapipe.Unity
     {
       while (children.Count < count)
       {
-        children.Add(InstantiateChild(false));
+        var instance = InstantiateChild(false);
+        children.Add(instance);
       }
     }
 
@@ -80,6 +81,8 @@ namespace Mediapipe.Unity
     protected virtual T InstantiateChild(bool isActive = true)
     {
       var annotation = InstantiateChild<T>(_annotationPrefab);
+      int childCount = this.transform.childCount;
+      annotation.name = $"{annotation.name}_{childCount}";
       annotation.SetActive(isActive);
       return annotation;
     }
