@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 using mptcc = Mediapipe.Tasks.Components.Containers;
 
@@ -96,14 +97,9 @@ namespace Mediapipe.Unity
       _landmarkListAnnotation.SetRadius(landmarkRadius);
     }
 
-    public void SetConnectionColor(Color connectionColor)
+    public void SetCatImage(RawImage catImage)
     {
-      _connectionListAnnotation.SetColor(connectionColor);
-    }
-
-    public void SetConnectionWidth(float connectionWidth)
-    {
-      _connectionListAnnotation.SetLineWidth(connectionWidth);
+      catImage.gameObject.SetActive(true);
     }
 
     public void SetHandedness(Hand handedness)

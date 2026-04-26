@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 using mptcc = Mediapipe.Tasks.Components.Containers;
 
@@ -23,6 +24,8 @@ namespace Mediapipe.Unity
     [SerializeField] private Color _connectionColor = Color.white;
     [SerializeField, Range(0, 1)] private float _connectionWidth = 1.0f;
 
+    [SerializeField] private RawImage _catImage;
+
 #if UNITY_EDITOR
     private void OnValidate()
     {
@@ -31,8 +34,7 @@ namespace Mediapipe.Unity
         ApplyLeftLandmarkColor(_leftLandmarkColor);
         ApplyRightLandmarkColor(_rightLandmarkColor);
         ApplyLandmarkRadius(_landmarkRadius);
-        ApplyConnectionColor(_connectionColor);
-        ApplyConnectionWidth(_connectionWidth);
+        ApplyCatImage(_catImage);
       }
     }
 #endif
@@ -55,16 +57,10 @@ namespace Mediapipe.Unity
       ApplyLandmarkRadius(_landmarkRadius);
     }
 
-    public void SetConnectionColor(Color connectionColor)
+    public void SetCatImage(RawImage catImage)
     {
-      _connectionColor = connectionColor;
-      ApplyConnectionColor(_connectionColor);
-    }
-
-    public void SetConnectionWidth(float connectionWidth)
-    {
-      _connectionWidth = connectionWidth;
-      ApplyConnectionWidth(_connectionWidth);
+      _catImage = catImage;
+      ApplyCatImage(_catImage);
     }
 
     public void SetHandedness(IReadOnlyList<ClassificationList> handedness)
@@ -121,8 +117,7 @@ namespace Mediapipe.Unity
       annotation.SetLeftLandmarkColor(_leftLandmarkColor);
       annotation.SetRightLandmarkColor(_rightLandmarkColor);
       annotation.SetLandmarkRadius(_landmarkRadius);
-      annotation.SetConnectionColor(_connectionColor);
-      annotation.SetConnectionWidth(_connectionWidth);
+      annotation.SetCatImage(_catImage);
       return annotation;
     }
 
@@ -150,19 +145,11 @@ namespace Mediapipe.Unity
       }
     }
 
-    private void ApplyConnectionColor(Color connectionColor)
+    private void ApplyCatImage(RawImage catImage)
     {
       foreach (var handLandmarkList in children)
       {
-        if (handLandmarkList != null) { handLandmarkList.SetConnectionColor(connectionColor); }
-      }
-    }
-
-    private void ApplyConnectionWidth(float connectionWidth)
-    {
-      foreach (var handLandmarkList in children)
-      {
-        if (handLandmarkList != null) { handLandmarkList.SetConnectionWidth(connectionWidth); }
+        if (handLandmarkList != null) { handLandmarkList.SetCatImage(catImage); }
       }
     }
   }
